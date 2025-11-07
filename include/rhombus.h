@@ -1,15 +1,20 @@
+
 #pragma once
+
 #include "figure.h"
 #include <memory>
 #include <vector>
 #include <stdexcept>
 
 template <Number T>
+
 class Rhombus : public Figure<T> {
+
 private:
     std::unique_ptr<Point<T>> center;
     T horizontal_diagonal;
     T vertical_diagonal;
+    
 public:
     Rhombus()
     : center(std::make_unique<Point<T>>(Point<T>(0,0))),
@@ -21,7 +26,9 @@ public:
         : center(std::make_unique<Point<T>>(_center)), 
           horizontal_diagonal(h_diag), 
           vertical_diagonal(v_diag) {
-              if (h_diag <= 0 || v_diag <= 0) throw std::invalid_argument("Diagonals must be positive.");
+              if (h_diag <= 0 || v_diag <= 0){ 
+                throw std::invalid_argument("Diagonals must be positive.");
+              }
           }
 
     Rhombus(const Rhombus& other)
@@ -30,6 +37,7 @@ public:
           vertical_diagonal(other.vertical_diagonal) {}
 
     Rhombus& operator=(const Rhombus& other) {
+
         if (this != &other) {
             center = std::make_unique<Point<T>>(*other.center);
             horizontal_diagonal = other.horizontal_diagonal;
@@ -39,6 +47,7 @@ public:
     }
     
     Rhombus& operator=(Rhombus&& other) noexcept {
+
         if (this != &other) {
             center = std::move(other.center);
             horizontal_diagonal = other.horizontal_diagonal;
@@ -67,10 +76,13 @@ public:
 
     void print(std::ostream& os) const override {
         auto vertices = getVertices();
-        os << "Rhombus (d1=" << horizontal_diagonal << ", d2=" << vertical_diagonal << ") [";
-        for (size_t i = 0; i < vertices.size(); ++i) {
-            os << *vertices[i] << (i < vertices.size() - 1 ? ", " : "");
+        os << "Rhombus (d1=" << horizontal_diagonal << ", d2=" << vertical_diagonal << ")";
+        for (size_t i = 0; i < vertices.size(); i++) {
+            os << *vertices[i];
+            if (i< vertices.size()-1){
+                os<<", ";
+            }
         }
-        os << " ] Area: " << area() << " Center: " << getCenter();
+        os << "Area: " << area() << " Center: " << getCenter();
     }
 };

@@ -1,4 +1,6 @@
+
 #pragma once
+
 #include "point.h"
 #include <memory>
 #include <vector>
@@ -7,10 +9,11 @@
 #include <cmath>
 
 template <Number T>
+
 class Figure {
+
 public:
-    virtual ~Figure() = default;
-    
+    virtual ~Figure() = default;    
     virtual Point<T> getCenter() const = 0;
     virtual double area() const = 0;
     virtual std::vector<std::unique_ptr<Point<T>>> getVertices() const = 0;
@@ -35,8 +38,10 @@ public:
         
         if (vertices1.size() != vertices2.size()) return false;
         
-        for (size_t i = 0; i < vertices1.size(); ++i) {
-            if (!vertices1[i] || !vertices2[i] || (*vertices1[i] != *vertices2[i])) return false;
+        for (size_t i = 0; i < vertices1.size(); i++) {
+            if (!vertices1[i] || !vertices2[i] || (*vertices1[i] != *vertices2[i])){ 
+                return false;
+            }
         }
         
         return true;

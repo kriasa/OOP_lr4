@@ -3,6 +3,7 @@
 #include <vector>
 #include <stdexcept>
 #include <string>
+#include <limits>
 #include "point.h"
 #include "figure.h"
 #include "rhombus.h"
@@ -10,81 +11,206 @@
 #include "hexagon.h"
 #include "array.h"
 
-template<Number T>
-void demonstrateFigure(const std::string& name, const Figure<T>& fig) {
-    std::cout << "=== " << name << " ===" << std::endl;
-    std::cout << fig << std::endl;
-    std::cout << "Geometric Center: " << fig.getCenter() << std::endl;
-    std::cout << "Area (via double conversion): " << static_cast<double>(fig) << std::endl;
-    std::cout << std::endl;
+void printMenu() {
+    std::cout << "1. Add figure" << std::endl;
+    std::cout << "2. Print all figures" << std::endl;
+    std::cout << "3. Calculate total area" << std::endl;
+    std::cout << "4. Delete figure by index" << std::endl;
+    std::cout << "5. Clear screen" << std::endl;
+    std::cout << "0. Exit" << std::endl;
+    std::cout << "Choose option:";
+}
+
+void addFigureMenu(Array<std::shared_ptr<Figure<double>>>& figures) {
+    std::cout << "\nADD FIGURE" << std::endl;
+    std::cout << "Choose figure type:" << std::endl;
+    std::cout << "1. Rhombus" << std::endl;
+    std::cout << "2. Pentagon" << std::endl;
+    std::cout << "3. Hexagon" << std::endl;
+    std::cout << "0. Back to main menu" << std::endl;
+    std::cout << "Choose type:";
+    
+    int typeChoice;
+    if (!(std::cin >> typeChoice)) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input! Please enter a number." << std::endl;
+        return;
+    }
+    
+    if (typeChoice == 0) return;
+    
+    double centerX, centerY;
+    std::cout << "Enter center coordinates (x y):";
+    if (!(std::cin >> centerX >> centerY)) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid coordinates!" << std::endl;
+        return;
+    }
+    Point<double> center(centerX, centerY);
+    
+    try {
+        switch (typeChoice) {
+            case 1: {
+                double d1, d2;
+                std::cout << "d1 d2 : ";
+                if (!(std::cin >> d1 >> d2)) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Invalid diagonals!" << std::endl;
+                    return;
+                }
+                figures.push_back(std::make_shared<Rhombus<double>>(center, d1, d2));
+                std::cout << "Rhombus added successfully!" << std::endl;
+                break;
+            }
+            case 2: {
+                double radius;
+                std::cout << "Enter radius: ";
+                if (!(std::cin >> radius)) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Invalid radius!" << std::endl;
+                    return;
+                }
+                figures.push_back(std::make_shared<Pentagon<double>>(center, radius));
+                std::cout << "Pentagon added successfully!" << std::endl;
+                break;
+            }
+            case 3: {
+                double radius;
+                std::cout << "Enter radius:";
+                if (!(std::cin >> radius)) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Invalid radius!" << std::endl;
+                    return;
+                }
+                figures.push_back(std::make_shared<Hexagon<double>>(center, radius));
+                std::cout << "Hexagon added successfully!" << std::endl;
+                break;
+            }
+            default:
+                std::cout << "Invalid figure type!" << std::endl;
+                return;
+        }
+    } catch (const std::exception& e) {
+        std::cout << "Error creating figure:" << e.what() << std::endl;
+    }
+}
+
+void printAllFigures(Array<std::shared_ptr<Figure<double>>>& figures) {
+    std::cout << "\nALL FIGURES (" << figures.size() << " total)" << std::endl;
+    
+    if (figures.size() == 0) {
+        std::cout << "No figures in array." << std::endl;
+        return;
+    }
+    
+    for (size_t i = 0; i < figures.size(); ++i) {
+        std::cout << "Figure " << i << ": ";
+        figures[i]->print(std::cout);
+        std::cout << std::endl;
+        std::cout << "  Center: " << figures[i]->getCenter() << std::endl;
+        std::cout << "  Area: " << figures[i]->area() << std::endl;
+        std::cout << std::endl;
+    }
+}
+
+void deleteFigureMenu(Array<std::shared_ptr<Figure<double>>>& figures) {
+    std::cout << "\nDELETE FIGURE" << std::endl;
+    
+    if (figures.size() == 0) {
+        std::cout << "No figures to delete." << std::endl;
+        return;
+    }
+    
+    std::cout << "Current figures (0 to " << figures.size() - 1 << "):" << std::endl;
+    for (size_t i = 0; i < figures.size(); ++i) {
+        std::cout << i << ": ";
+        figures[i]->print(std::cout);
+        std::cout << std::endl;
+    }
+    
+    std::cout << "Enter index to delete:";
+    size_t index;
+    if (!(std::cin >> index)) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid index!" << std::endl;
+        return;
+    }
+    
+    if (index < figures.size()) {
+        figures.erase(index);
+        std::cout << "Figure at index " << index << " deleted successfully!" << std::endl;
+    } else {
+        std::cout << "Invalid index!" << std::endl;
+    }
+}
+
+void clearScreen() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
 }
 
 int main() {
-    std::cout << "=== Laboratory Work: MetaProgramming with Figures ===" << std::endl;
+    Array<std::shared_ptr<Figure<double>>> figures;
     
-    Array<std::shared_ptr<Figure<double>>> figureArray;
-
-    try {
-        std::cout << "\n1. DEMONSTRATING DIFFERENT SCALAR TYPES" << std::endl;
+    int choice;
+    do {
+        printMenu();
         
-        Rhombus<double> rhombus_double(Point<double>(0.0, 0.0), 4.5, 6.5);
-        demonstrateFigure("Rhombus (double)", rhombus_double);
-
-        Pentagon<int> pentagon_int(Point<int>(1, 1), 5);
-        demonstrateFigure("Pentagon (int)", pentagon_int);
-
-        Hexagon<float> hexagon_float(Point<float>(2.5f, 2.5f), 3.5f);
-        demonstrateFigure("Hexagon (float)", hexagon_float);
-
-        std::cout << "\n2. DEMONSTRATING ARRAY WITH shared_ptr<Figure<double>>" << std::endl;
-        
-        figureArray.push_back(std::make_shared<Rhombus<double>>(Point<double>(0, 0), 4.0, 6.0));
-        figureArray.push_back(std::make_shared<Pentagon<double>>(Point<double>(2, 2), 3.0));
-        figureArray.push_back(std::make_shared<Hexagon<double>>(Point<double>(4, 4), 2.5));
-        
-        std::cout << "Array contains " << figureArray.size() << " figures:" << std::endl;
-        for (size_t i = 0; i < figureArray.size(); ++i) { 
-            std::cout << "Figure " << i << ": ";
-            figureArray[i]->print(std::cout);
-            std::cout << std::endl;
-        }
-        
-        std::cout << "Total area of all figures: " << figureArray.totalArea() << std::endl;
-        std::cout << "\n3. DEMONSTRATING REMOVAL" << std::endl;
-        std::cout << "Removing figure at index 1..." << std::endl;
-        figureArray.erase(1);
-        std::cout << "Now array contains " << figureArray.size() << " figures" << std::endl;
-        std::cout << "Total area after removal: " << figureArray.totalArea() << std::endl;
-        std::cout << "\n4. DEMONSTRATING TEMPLATE ARRAY WITH SPECIFIC TYPES" << std::endl;
-
-        Array<Rhombus<int>> rhombusArray;
-        rhombusArray.push_back(Rhombus<int>(Point<int>(0, 0), 4, 6));
-        rhombusArray.push_back(Rhombus<int>(Point<int>(5, 5), 3, 4));
-        rhombusArray.push_back(Rhombus<int>(Point<int>(1, 1), 7, 2));
-        
-        std::cout << "Rhombus array size: " << rhombusArray.size() << std::endl;
-        std::cout << "Total area of rhombus array: " << rhombusArray.totalArea() << std::endl;
-
-        std::cout << "\n5. DEMONSTRATING STANDARD INPUT" << std::endl;
-        double d1, d2;
-        Point<double> input_center(10.0, 10.0);
-        std::cout << "Enter two diagonal values for a new Rhombus<double> (d1 d2): ";
-        
-        if (std::cin >> d1 >> d2) {
-            figureArray.push_back(
-                std::make_shared<Rhombus<double>>(input_center, d1, d2)
-            );
-            std::cout << "Rhombus<double> added. New Array Size: " << figureArray.size() << std::endl;
-            std::cout << "Total area after input: " << figureArray.totalArea() << std::endl;
-        } else {
-            std::cerr << "Invalid input." << std::endl;
+        if (!(std::cin >> choice)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input! Please enter a number (0-5)." << std::endl;
+            continue;
         }
 
-    } catch (const std::exception& e) {
-        std::cerr << "An exception occurred: " << e.what() << std::endl;
-        return 1;
-    }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
+        try {
+            switch (choice) {
+                case 1:
+                    addFigureMenu(figures);
+                    break;
+                case 2:
+                    printAllFigures(figures);
+                    break;
+                case 3:
+                    std::cout << "\nTOTAL AREA" << std::endl;
+                    if (figures.size() == 0) {
+                        std::cout << "No figures in array." << std::endl;
+                    } else {
+                        std::cout << "Total area of all " << figures.size() 
+                                  << " figures: " << figures.totalArea() << std::endl;
+                    }
+                    break;
+                case 4:
+                    deleteFigureMenu(figures);
+                    break;
+                case 5:
+                    clearScreen();
+                    break;
+                case 0:
+                    std::cout << "\nEXITING" << std::endl;
+                    std::cout << "Final array size:" << figures.size() << std::endl;
+                    std::cout << "Final total area:" << figures.totalArea() << std::endl;
+                    break;
+                default:
+                    std::cout << "Invalid option! Please enter a number between 0 and 5." << std::endl;
+                    break;
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Error:" << e.what() << std::endl;
+        }
+        
+    } while (choice != 0);
 
-    std::cout << "\n=== Laboratory Work Completed ===" << std::endl;
     return 0;
 }

@@ -7,9 +7,11 @@
 
 template <Number T>
 class Hexagon : public Figure<T> {
+
 private:
     std::unique_ptr<Point<T>> center;
     T radius;
+
 public:
     Hexagon()
     : center(std::make_unique<Point<T>>(Point<T>(0,0))),
@@ -17,7 +19,9 @@ public:
 
     Hexagon(const Point<T>& _center, T _radius) 
         : center(std::make_unique<Point<T>>(_center)), radius(_radius) {
-            if (_radius <= 0) throw std::invalid_argument("Radius must be positive.");
+            if (_radius <= 0){ 
+                throw std::invalid_argument("Radius must be positive.");
+            }
         }
 
     Hexagon(const Hexagon& other)
@@ -50,7 +54,7 @@ public:
         std::vector<std::unique_ptr<Point<T>>> vertices;
         const int N = 6;
         
-        for (int i = 0; i < N; ++i) {
+        for (int i = 0; i < N; i++) {
             double angle = 2.0 * M_PI * i / N - M_PI / 6.0; 
             T x = center->getX() + radius * std::cos(angle);
             T y = center->getY() + radius * std::sin(angle);
@@ -61,11 +65,17 @@ public:
     }
 
     void print(std::ostream& os) const override {
+
         auto vertices = getVertices();
-        os << "Hexagon (R=" << radius << ") [";
-        for (size_t i = 0; i < vertices.size(); ++i) {
-            os << *vertices[i] << (i < vertices.size() - 1 ? ", " : "");
+        os << "Hexagon (R=" << radius << ")";
+
+        for (size_t i = 0; i < vertices.size(); i++) {
+            os << *vertices[i];
+            if (i < vertices.size()-1){
+                os<<" ";
+            }
         }
-        os << " ] Area: " << area() << " Center: " << getCenter();
+
+        os << "Area:" << area() << "Center:" << getCenter();
     }
 };

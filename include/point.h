@@ -1,4 +1,6 @@
+
 #pragma once
+
 #include <concepts>
 #include <iostream>
 #include <memory>
@@ -20,13 +22,15 @@ nearlyEqual(T a, T b) {
 }
 
 template <typename T>
+
 concept Number = std::is_default_constructible<T>::value && 
                 (std::integral<T> || std::floating_point<T>);
 
 template <Number T>
+
 class Point {
     friend std::ostream &operator<<(std::ostream &os, const Point<T> &rhv) {
-        os << "(" << rhv.x << ", " << rhv.y << ")";
+        os << "(" << rhv.x << " " << rhv.y << ")";
         return os;
     }
 
@@ -37,9 +41,11 @@ class Point {
     friend bool operator!=(const Point<T>& lhs, const Point<T>& rhs) {
         return !(lhs == rhs);
     }
+
 private:
     T x;
     T y;
+
 public:
     Point() : x(0), y(0) {}
     Point(const T& _x, const T& _y) : x(_x), y(_y) {}

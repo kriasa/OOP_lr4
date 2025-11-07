@@ -199,7 +199,7 @@ CMakeFiles/myProgram.dir/src/main.cpp.o: \
  /usr/include/c++/13/pstl/execution_defs.h /usr/include/c++/13/vector \
  /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
- /usr/include/c++/13/bits/vector.tcc \
+ /usr/include/c++/13/bits/vector.tcc /usr/include/c++/13/limits \
  /mnt/f/2_kurs/1_sem/oop/4_laba/include/point.h /usr/include/c++/13/cmath \
  /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
@@ -210,8 +210,7 @@ CMakeFiles/myProgram.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /usr/include/c++/13/bits/specfun.h /usr/include/c++/13/limits \
- /usr/include/c++/13/tr1/gamma.tcc \
+ /usr/include/c++/13/bits/specfun.h /usr/include/c++/13/tr1/gamma.tcc \
  /usr/include/c++/13/tr1/special_function_util.h \
  /usr/include/c++/13/tr1/bessel_function.tcc \
  /usr/include/c++/13/tr1/beta_function.tcc \
